@@ -1,0 +1,44 @@
+# Build outputs
+logs
+target
+dist
+*.class
+*.log
+
+# SBT
+.cache
+.history
+.lib/
+project/boot/
+project/plugins/project/
+
+# IDE
+/.idea
+/.idea_modules
+*.iml
+*.ipr
+*.iws
+/.classpath
+/.project
+/.settings
+/.vscode
+/.metals
+/.bloop
+/.bsp
+
+# Scala-IDE specific
+.scala_dependencies
+.worksheet
+
+# Misc
+/.g8
+/RUNNING_PID
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Metals
+.metals/
+.bloop/
+metals.sbt
