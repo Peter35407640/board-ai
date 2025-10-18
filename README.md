@@ -182,12 +182,10 @@ val game = new TicTacToeGame()
 val agent1 = new AlphaBetaAgent(game)
 val agent2 = new MctsAgent(game, numSimulations = 1000)
 
+val t = new boardai.Tournament[TttBoard, TttMove](game.initialState())
+
 // Play a game
-var state = game.initialState()
-while (!state.isOver) {
-  val move = agent1.selectMove(state)
-  state = game.applyMove(state, move)
-}
+t.playSingleGameTournament(game, agent1, agent2, nGames = 20, None)
 ```
 
 
