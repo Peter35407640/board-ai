@@ -20,8 +20,8 @@ libraryDependencies ++= Seq(
   "org.deeplearning4j" % "deeplearning4j-nn" % dl4jVersion,
 
   // GPU Support - nd4j cuda  12.0 not supported
-//    "org.nd4j" % "nd4j-native-platform" % dl4jVersion,
-  "org.nd4j" % "nd4j-cuda-11.2-platform" % dl4jVersion,
+    "org.nd4j" % "nd4j-native-platform" % dl4jVersion,
+//  "org.nd4j" % "nd4j-cuda-11.2-platform" % dl4jVersion,
 
 
   // Testing - updated for Scala 3
