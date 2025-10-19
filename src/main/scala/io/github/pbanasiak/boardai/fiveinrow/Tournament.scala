@@ -26,9 +26,10 @@ object Tournament extends App {
 
   private val (modelConfig, trainingConfig) = FiveInRowPresets.configForBoardSize(gameConfig.boardSize)
   private val encoder = new Planes3FiveInRowEncode(gameConfig)
-  private val mctsRounds = 300
+  private val mctsRounds = 10000 // determines thinking time
   private val nGames = 10
   private val mcDepth = 1
+  println(s"mctsRounds $mctsRounds depth $mcDepth")
 
   // "models/fiveinrow_7x7
   private def mkModel(baseName: String): FiveInRowCnnPolicyValueModel = {
@@ -56,7 +57,7 @@ object Tournament extends App {
 
     new MctsNnAgent(game, nodeCreator, mcNnPlayer, collector = None,
       roundsPerMove = mctsRounds,
-      puctCoeff = 8.0, rand = rnd, selectRandomly = false)
+      puctCoeff = 4.0, rand = rnd, selectRandomly = false)
   }
 
   private def mkPlainMctsAgent() = {
@@ -67,39 +68,39 @@ object Tournament extends App {
   }
 
   val maxEpisodeLength = gameConfig.boardSize * gameConfig.boardSize
-  val randomAgent = new RandomAgent(game, rnd)
   val nodeCreator = MctsNodeCreator(game)
 
   // UI
-  val ui = new SwingUI(game)
-  val humanAgent = new HumanAgent(game, Some(ui))
+  val ui = Some(new SwingUI(game))
 
-
+  // agents to choose from
+  val humanAgent = new HumanAgent(game, ui)
   val mctsNnAgent = mkNnAgent("models/fiveinrow_7x7_cnn_iter_90")
-  println(s"mctsRounds $mctsRounds depth $mcDepth")
   val mctsNnAgentPrev = mkNnAgent("models/fiveinrow_7x7_cnn_iter_5")
   val mctsAgent = mkPlainMctsAgent()
   val abAgent = new FixedDepthAlphaBetaAgent(RandomOrderGame(game), fixedDepth = 6)
+  val randomAgent = new RandomAgent(game, rnd)
 
   // Create debug context for model visualization
   val model = mkModel("models/fiveinrow_7x7_cnn_iter_90")
-
   val t = new Tournament[Board, Move](game.initialState())
+
+
+  // comment auto play section below if you want human play
   val result1: TournamentResult = t.playSingleGameTournament(
     game, mctsNnAgent, mctsAgent,
-    nGames, maxEpisodeLength, Some(ui))
+    nGames, maxEpisodeLength, ui)
   println(f"TournamentResult result ${result1} }")
 
   val result2: TournamentResult = t.playSingleGameTournament(
     game, mctsAgent, mctsNnAgent,
-    nGames, maxEpisodeLength, Some(ui))
+    nGames, maxEpisodeLength, ui)
   println(f"TournamentResult result ${result2} }")
+  // END of auto play section
 
   // uncomment for iterative human play
-  //  val t = new Tournament[Board, Move](game.initialState())
-
-  //  val interactive: TournamentResult = t.playSingleGameTournament(
-  //    game, humanAgent, mctsNnAgent, 1, maxEpisodeLength, uiPrinter)
-  //  println(s"Interactive game result: $interactive")
+  //    val interactive: TournamentResult = t.playSingleGameTournament(
+  //      game, humanAgent, mctsNnAgent, 1, maxEpisodeLength, ui)
+  //    println(s"Interactive game result: $interactive")
 
 }
